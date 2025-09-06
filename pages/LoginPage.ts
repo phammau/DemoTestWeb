@@ -1,5 +1,6 @@
 import { Locator, Page } from "@playwright/test";
 import { BasePage } from "./BasePage";
+import { ProductPage } from "./ProductPage";
 
 export class LoginPage extends BasePage {
     private readonly title: Locator;
@@ -13,9 +14,11 @@ export class LoginPage extends BasePage {
     private readonly error: Locator;
     private readonly recoverEmail: Locator;
     private readonly emailNotFoundMessage: Locator;
+    private readonly products: Locator;
+    private readonly home: Locator;
     
     constructor(page: Page) {
-        super(page);
+        super(page);   
         this.userName = page.locator("#customer_email");
         this.passWord = page.locator("#customer_password");
         this.title = page.locator("//a[@title='Sản Phẩm Bán Chạy']");
@@ -26,7 +29,9 @@ export class LoginPage extends BasePage {
         this.forgetPassword = page.locator(".quenmk");
         this.recoverEmail = page.locator("#recover-email");
         this.getPasswordBtn = page.locator("//input[@value='Lấy lại mật khẩu']");
-        this.emailNotFoundMessage= page.locator("//div[normalize-space(text())='Không tìm thấy tài khoản tương ứng với email này.']");
+        this.emailNotFoundMessage = page.locator("//div[normalize-space(text())='Không tìm thấy tài khoản tương ứng với email này.']");
+        this.products = page.locator("//div[@class='container']//div[@class='swiper_feature swiper-container swiper-container-initialized swiper-container-horizontal swiper-container-pointer-events']//form[@action='/cart/add']");
+        this.home = page.locator("//a[@title='Trang Chủ']");
     }
 
     async goto() { await this.page.goto('/'); }
@@ -45,4 +50,11 @@ export class LoginPage extends BasePage {
     async inputRecoverEmail(email: string) { await this.recoverEmail.fill(email); }
     async getPasswordFieldValue() { await this.passWord.textContent(); }
     async getEmailNotFoundMessage() { return (await this.emailNotFoundMessage.textContent())?.trim(); }
+
+    async getProductItems() {
+        const elements = await this.products.all();
+        return elements.map((_) => new ProductPage(this.page));
+    }
+    async clickHome() { await this.home.click(); }
 }
+

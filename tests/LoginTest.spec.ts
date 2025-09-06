@@ -10,6 +10,7 @@ const test = base.extend<{ loginPage: LoginPage }>({
     },
 });
 
+// test 1: dang nhap thanh cong
 test('loginSuccess', async ({ loginPage, page }) => {
     await loginPage.clickButtonAcount();
     await loginPage.clickLoginMenuItem();
@@ -20,6 +21,7 @@ test('loginSuccess', async ({ loginPage, page }) => {
     expect(await homePage.isDisplayed()).toBeTruthy();
 })
 
+// test 2: dang nhap voi pass sai
 test('loginWithIncorrectPassword', async ({ loginPage, page }) => {
     await loginPage.clickButtonAcount();
     await loginPage.clickLoginMenuItem();
@@ -29,6 +31,7 @@ test('loginWithIncorrectPassword', async ({ loginPage, page }) => {
     expect(await loginPage.getError(), "Thông tin đăng nhập không chính xác.");
 })
 
+// test 3: dang nhap voi user sai
 test('loginWithIncorrectUser', async ({ loginPage, page }) => {
     await loginPage.clickButtonAcount();
     await loginPage.clickLoginMenuItem();
@@ -38,6 +41,7 @@ test('loginWithIncorrectUser', async ({ loginPage, page }) => {
     expect(await loginPage.getError(), "Thông tin đăng nhập không chính xác.");
 })
 
+// test 4: dang nhap voi pass va user trong
 test('loginWithEmptyEmailAndPassword', async ({ loginPage, page }) => {
     await loginPage.clickButtonAcount();
     await loginPage.clickLoginMenuItem();
@@ -46,6 +50,7 @@ test('loginWithEmptyEmailAndPassword', async ({ loginPage, page }) => {
     expect(message).toContain("Please fill out this field");
 })
 
+// test 5: dang nhap voi pass trong
 test('loginWithEmptyPassword', async ({ loginPage, page }) => {
     await loginPage.clickButtonAcount();
     await loginPage.clickLoginMenuItem();
@@ -55,6 +60,7 @@ test('loginWithEmptyPassword', async ({ loginPage, page }) => {
     expect(message).toContain("Please fill out this field");
 })
 
+// test 6: dang nhap voi user trong
 test('loginWithEmptyEmail', async ({ loginPage, page }) => {
     await loginPage.clickButtonAcount();
     await loginPage.clickLoginMenuItem();
@@ -64,11 +70,12 @@ test('loginWithEmptyEmail', async ({ loginPage, page }) => {
     expect(message).toContain("Please fill out this field");
 })
 
+// test 7: kiem tra trang thai quen pass thanh cong
 test('checkForgotPasswordSuccess', async ({ loginPage, page }) => {
   await page.route('**/api/forgot-password', (route) => {
     const fakeResponse = {
       success: true,
-      newPassword: '123456' // mật khẩu giả trả về
+      newPassword: '123456' // mat khau gia tra ve
     };
     route.fulfill({
       status: 200,
@@ -81,12 +88,13 @@ test('checkForgotPasswordSuccess', async ({ loginPage, page }) => {
   await loginPage.clickLoginMenuItem();
   await loginPage.clickForgetPassword();
   await loginPage.inputRecoverEmail('phammau0502@gmail.com');
-  await loginPage.clickButtonRetrievePassword();// Gọi hành động gửi
-  const passwordValue = await loginPage.getPasswordFieldValue();// Nếu getPasswordFieldValue đọc được value field password trên UI
-  expect(passwordValue).not.toBe('');// Kỳ vọng: password field không rỗng (vì backend giả trả newPassword và UI gán vào)
+  await loginPage.clickButtonRetrievePassword();
+  const passwordValue = await loginPage.getPasswordFieldValue();
+  expect(passwordValue).not.toBe('');
   expect(passwordValue).toBe('123456');
 });
 
+// test 8: lay lai pass voi email sai
 test('forgotPasswordEmailNotFound', async ({ loginPage, page }) => {
     await loginPage.clickButtonAcount();
     await loginPage.clickLoginMenuItem();
@@ -97,6 +105,7 @@ test('forgotPasswordEmailNotFound', async ({ loginPage, page }) => {
     expect(await loginPage.getEmailNotFoundMessage(), "Không tìm thấy tài khoản tương ứng với email này.");
 })
 
+// test 9: lay lai pass voi email trong
 test('forgotPasswordEmailEmpty', async ({ loginPage, page }) => {
     await loginPage.clickButtonAcount();
     await loginPage.clickLoginMenuItem();
@@ -106,6 +115,7 @@ test('forgotPasswordEmailEmpty', async ({ loginPage, page }) => {
     expect(message, "Please fill out this field");
 })
 
+// test 10: lay lai pass voi email sai dinh dang
 test('checkRecoverWithInvalidEmail', async ({ loginPage, page }) => {
     await loginPage.clickButtonAcount();
     await loginPage.clickLoginMenuItem();
@@ -114,5 +124,4 @@ test('checkRecoverWithInvalidEmail', async ({ loginPage, page }) => {
      await loginPage.inputRecoverEmail('phammau0502gmail.com');
     const message = await page.$eval('#recover-email', el => (el as HTMLInputElement).validationMessage);
     expect(message, "Please include an '@' in the email address. 'phammau0502gmail.com' is missing an '@'.");
-    console.log(message);
 })

@@ -19,12 +19,14 @@ const test = base.extend<{ loginPage: LoginPage, homePage: HomePage }>({
     },
 });
 
+// test 11: dang xuat sau khi dang nhap thanh cong
 test('logoutAfterSuccessfulLogin', async ({ loginPage, homePage, page }) => {
     await homePage.clickButtonAcount();
     await homePage.clickLogoutMenuItem();
     expect(await loginPage.isDisplayed()).toBeTruthy();
 })
 
+// test 12: doi pass thanh cong
 test('checkChangePasswordSuccess', async ({ homePage, page }) => {
     await homePage.clickChangePassword();
     await homePage.inputOldPassword("05021997");
@@ -34,6 +36,7 @@ test('checkChangePasswordSuccess', async ({ homePage, page }) => {
     expect(await homePage.checkSuccess()).toBeTruthy();
 })
 
+// test 13: doi pass  voi pass moi sai
 test('checkChangeWithIncorrectPassword', async ({ homePage, page }) => {
     await homePage.clickChangePassword();
     await homePage.inputOldPassword("521997");
@@ -43,6 +46,7 @@ test('checkChangeWithIncorrectPassword', async ({ homePage, page }) => {
     expect(await homePage.getError(),"Mật khẩu không đúng");
 })
 
+// test 14: doi pass voi pass qua ngan
 test('checkChangeWithPasswordLength', async ({ homePage, page }) => {
     await homePage.clickChangePassword();
     await homePage.inputOldPassword("05021997");
@@ -52,6 +56,7 @@ test('checkChangeWithPasswordLength', async ({ homePage, page }) => {
     expect(await homePage.getError(), "Mật khẩu mới dài từ 6 đến 50 ký tự");
 })
 
+// test 15: doi pass voi xac nhan pass khong khop
 test('checkPasswordMismatch', async ({ homePage, page }) => {
     await homePage.clickChangePassword();
     await homePage.inputOldPassword("05021997");
