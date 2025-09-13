@@ -10,7 +10,10 @@ const test = base.extend<{ loginPage: LoginPage }>({
         await use(loginPage);
     },
 });
-
+// Backend khong ho tro nhieu user test, ep cac test nay chay theo thu tu, tranh conflict:
+test.describe.serial('CartTest', () => {
+    
+// test 16 : them san pham vao gio hang
 test('addToCart', async ({ loginPage, page }) => {
     let expectCount = 0;
     const products = await loginPage.getProductItems();
@@ -26,6 +29,7 @@ test('addToCart', async ({ loginPage, page }) => {
     }
 })
 
+// test 17 : xoa san pham khoi gio hang
 test('removeCart', async ({ loginPage, page }) => {
     let expectCount = 0;
     const products = await loginPage.getProductItems();
@@ -48,6 +52,7 @@ test('removeCart', async ({ loginPage, page }) => {
     }
 })
 
+// test 18 : kiem tra thong tin san pham trong gio hang
 test('checkInformationProduct', async ({ loginPage, page }) => { 
     const products = await loginPage.getProductItems();
     for (let i = 0; i < products.length; i++) {
@@ -78,6 +83,7 @@ test('checkInformationProduct', async ({ loginPage, page }) => {
     }
 })
 
+// test 19 : tang so luong san pham 
 test('checkIncreaseQuantityProduct', async ({ loginPage, page }) => { 
     const products = await loginPage.getProductItems();
     let quantity = 1;
@@ -96,25 +102,27 @@ test('checkIncreaseQuantityProduct', async ({ loginPage, page }) => {
     }
 }) 
 
-test('checkTotalPrice', async ({ loginPage, page }) => { 
-    const products = await loginPage.getProductItems();
-    for (let i = 0; i < products.length; i++) {
-        const element = products[i];
-        await element.clickProduct(i);
-        const productItemPage = new ProductItemPage(page);
-        await productItemPage.clickAddToCart();
-        await page.waitForTimeout(500);
-        const cartPage = new CartPage(page);
-        await cartPage.clickCart();
-        await page.waitForTimeout(1000);
+// test 20 : kiem tra tong gia tien
+    test('checkTotalPrice', async ({ loginPage, page }) => {
+        const products = await loginPage.getProductItems();
+        for (let i = 0; i < products.length; i++) {
+            const element = products[i];
+            await element.clickProduct(i);
+            const productItemPage = new ProductItemPage(page);
+            await productItemPage.clickAddToCart();
+            await page.waitForTimeout(500);
+            const cartPage = new CartPage(page);
+            await cartPage.clickCart();
+            await page.waitForTimeout(1000);
 
-        const carts = await cartPage.getCartItems();
-        const unitPrice = await carts[0].getPrice();
-        const totalPrice = await carts[0].getTotalPrice();
-        const quantity = await carts[0].getQuantity();
+            const carts = await cartPage.getCartItems();
+            const unitPrice = await carts[0].getPrice();
+            const totalPrice = await carts[0].getTotalPrice();
+            const quantity = await carts[0].getQuantity();
 
-        expect(totalPrice).toBe((unitPrice * quantity));
-        await carts[0].removeCart();
-        await loginPage.clickHome();
-    }
-})
+            expect(totalPrice).toBe((unitPrice * quantity));
+            await carts[0].removeCart();
+            await loginPage.clickHome();
+        }
+    });
+ })

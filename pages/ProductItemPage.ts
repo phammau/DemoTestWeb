@@ -24,7 +24,10 @@ export class ProductItemPage extends BasePage {
     }
     
     async getImage() { await this._image.getAttribute("src"); }
-    async getName() { await this._name.textContent(); }
+    async getName() {
+        await this._name.waitFor({ state: "visible" });
+        await this._name.textContent();
+    }
     async getPrice() {
         const price = (await this._price.textContent())?.replace(/[^\d]/g, "") ?? "0";
         return Number(price);
